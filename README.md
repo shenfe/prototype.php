@@ -27,6 +27,12 @@ $obj->a = 1;
 $obj->getA = function ($that) { return $that->a; };
 
 echo $obj->getA(); // will print 1
+
+$obj2 = new Object;
+
+$obj2->a = 2;
+
+echo $obj->getA->call($obj2); // will print 2 (that's right, we got call & apply!)
 ```
 
 We are able to add as many properties & members to our object as the PHP memory limit can handle and that's pretty neat because our object is now morphic.
