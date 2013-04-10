@@ -24,12 +24,6 @@ use Prototype\Object,
 Very simple, instanciate Prototype\Object class and treat it like a JavaScript object.
 
 ```PHP
-<?php
-require_once "Prototype/Object.php";
-require_once "Prototype/FunctionObject.php";
-
-use Prototype\Object,Prototype\FunctionObject;
-
 $object = new Object;
 
 $object->aProperty = 'hello';
@@ -51,12 +45,6 @@ echo $object->aMethod->call($another_object); // 'strange world!'
 Note that `call` and `apply` are available for `aMethod` since we added it to `$object` because it was wrapped into a `Prototype\FunctionObject`. We could get the same result using directly an instance of `Prototype\FunctionObject`.
 
 ```PHP
-<?php
-require_once "Prototype/Object.php";
-require_once "Prototype/FunctionObject.php";
-
-use Prototype\Object,Prototype\FunctionObject;
-
 $function = new FunctionObject(function () {
     return $this->aProperty . 'world!';
 });
@@ -76,12 +64,6 @@ As you may have noticed, we use PHP 5.4 Closures.
 The first parameter of `Prototype\Object::__construct` can be either a structure (array) or a prototype for the new object (instance of `Prototype\Object`). In the later, the new object will then inherit all the members from his parent unless it redefines them.
 
 ```PHP
-<?php
-require_once "Prototype/Object.php";
-require_once "Prototype/FunctionObject.php";
-
-use Prototype\Object,Prototype\FunctionObject;
-
 $parent = new Object;
 $parent->a = 1;
 $parent->getA = function () {
@@ -99,12 +81,6 @@ echo $parent->getA(); // '1'
 Obviously, you can use transitivity.
 
 ```PHP
-<?php
-require_once "Prototype/Object.php";
-require_once "Prototype/FunctionObject.php";
-
-use Prototype\Object,Prototype\FunctionObject;
-
 $object_A = new Object;
 $object_B = new Object($object_A);
 $object_C = new Object($object_B);
@@ -119,12 +95,6 @@ echo $object_C->a, $object_C->b, $object_C->c; // '1 2 3'
 If you want to prevent a value change in the parent to occur in the children, simply clone them !
 
 ```PHP
-<?php
-require_once "Prototype/Object.php";
-require_once "Prototype/FunctionObject.php";
-
-use Prototype\Object,Prototype\FunctionObject;
-
 $object_A = new Object;
 $object_A->method = function () {
     return 'foo';
@@ -147,12 +117,6 @@ echo $object->foo(); // still 'foo'
 Prototyped objects are also traversables structures...
 
 ```PHP
-<?php
-require_once "Prototype/Object.php";
-require_once "Prototype/FunctionObject.php";
-
-use Prototype\Object,Prototype\FunctionObject;
-
 $object = new Object([1,2,3]);
 
 foreach ($object as $value)
@@ -162,12 +126,6 @@ foreach ($object as $value)
 ... as well as arrays.
 
 ```PHP
-<?php
-require_once "Prototype/Object.php";
-require_once "Prototype/FunctionObject.php";
-
-use Prototype\Object,Prototype\FunctionObject;
-
 $object = new Object;
 
 $object['a'] = 1;
@@ -181,12 +139,6 @@ echo $object->getA();
 You can even turn a function into a factory.
 
 ```PHP
-<?php
-require_once "Prototype/Object.php";
-require_once "Prototype/FunctionObject.php";
-
-use Prototype\Object,Prototype\FunctionObject;
-
 $function = new FunctionObject(function ($a, $b, $c) {
     $this->a = $a;
     $this->b = $b;
