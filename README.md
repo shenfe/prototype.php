@@ -1,88 +1,191 @@
-#prototype.php#
+#prototype.php
 
 **Prototypal inheritance in PHP**
 
-##Tired of classical inheritance ?##
+##Tired of classical inheritance ?
 
 prototype.php is a proof-of-concept that demonstrate that the prototypal inheritance, which is the strenght of many modern languages like JavaScript, is also applicable to PHP.
 
-##How it works ?##
+##Create an object
 
-It strongly rely on PHP's magical method to allow any object to be used like a JavaScript object and on closures to define our objects' behavior. It uses the references between prototypes to create a chain and then use it to locate a member. Unfortunately, like in JavaScript, the cost to pay is to take encapsulation off the table for we won't be able to define members' visibility anymore.
+Very simple, instanciate Prototype\Object class and treat it like a JavaScript object.
 
-You can have a look into the _Object_ class to get a grasp on how it's built, it's no dark magic (except for the _Method_ serialization maybe...)
+    ```PHP
+    <?php
+    require_once "Prototype/Object.php";
+    require_once "Prototype/FunctionObject.php";
 
-##How to use it ?##
+    use Prototype\Object,Prototype\FunctionObject;
 
-Everything starts with a blank object, then you add some members to its and prototype and you can start chaining. Because it's technically impossible to import the _$this_ keyword inside an anonymous function scope, we're just going to use a _$that_ parameter on every method we want to attach to our objects.
+    $object = new Object;
 
-```PHP
-<?php
-require_once "prototype.php";
+    $object->aProperty = 'hello';
 
-$obj = new Object;
+    $object->aMethod = function () {
+        return $this->aProperty . 'world!';
+    };
 
-$obj->a = 1;
+    echo $object->aMethod(); // 'helloworld!'
 
-$obj->getA = function ($that) { return $that->a; };
+    $another_object = new Object;
 
-echo $obj->getA(); // will print 1
+    $another_object->aProperty = 'strange ';
 
-$obj2 = new Object;
+    // aply is also available
+    echo $object->aMethod->call($another_object); // 'strange world!'
+    ```
 
-$obj2->a = 2;
+Note that `call` and `apply` are available for `aMethod` since we added it to `$object` because it was wrapped into a `Prototype\FunctionObject`. We could get the same result using directly an instance of `Prototype\FunctionObject`.
 
-echo $obj->getA->call($obj2); // will print 2 (that's right, we got call & apply!)
-```
+    ```PHP
+    <?php
+    require_once "Prototype/Object.php";
+    require_once "Prototype/FunctionObject.php";
 
-We are able to add as many properties & members to our object as the PHP memory limit can handle and that's pretty neat because our object is now morphic.
+    use Prototype\Object,Prototype\FunctionObject;
 
-What's so great about that you may ask. When it comes handy is when we turn this morphic capability into a way to define classes. But this time, contrary to classical oriented object programming, the class can change and its children will be affected by those changes.
+    $function = new FunctionObject(function () {
+        return $this->aProperty . 'world!';
+    });
 
-```PHP
-<?php
-require_once "prototype.php";
+    // another syntax to create objects
+    $object = new Object([
+        'aProperty' => 'hello',
+    ]);
 
-$obj1 = new Object;
+    echo $function->call($object); // 'helloworld!'
+    ```
 
-$obj1->prototype->foo = function () { echo "foo\n"; };
+As you may have noticed, we use PHP 5.4 Closures.
 
-$obj2 = new Object($obj1->prototype);
+##Inherit objects
 
-$obj2->foo(); // foo
+The first parameter of `Prototype\Object::__construct` can be either a structure (array) or a prototype for the new object (instance of `Prototype\Object`). In the later, the new object will then inherit all the members from his parent unless it redefines them.
 
-$obj1->prototype->foo = function () { echo "bar\n"; };
+    ```PHP
+    <?php
+    require_once "Prototype/Object.php";
+    require_once "Prototype/FunctionObject.php";
 
-$obj2->foo(); // bar (inheritance!)
+    use Prototype\Object,Prototype\FunctionObject;
 
-$obj3 = new Object($obj2->prototype);
+    $parent = new Object;
+    $parent->a = 1;
+    $parent->getA = function () {
+        return $this->a;
+    };
 
-$obj1->prototype->foo = function () { echo "baz\n"; };
+    $child = new Object($parent);
+    echo $child->getA(); // '1'
 
-$obj3->foo(); // baz (transitivity!)
-```
+    $child->a = 2;
+    echo $child->getA(); // '2'
+    echo $parent->getA(); // '1'
+    ```
 
-The above example shows the property of inheritance & transitivity of our prototype. But our object is not class if you can't make objects with it, right ?
+Obviously, you can use transitivity.
 
-So we're going to add a factory method, ingeniously called _new_, to our object and Voilà, we have a weird-shaped class.
+    ```PHP
+    <?php
+    require_once "Prototype/Object.php";
+    require_once "Prototype/FunctionObject.php";
 
-```PHP
-<?php
-require_once "prototype.php";
+    use Prototype\Object,Prototype\FunctionObject;
 
-$class = new Object;
+    $object_A = new Object;
+    $object_B = new Object($object_A);
+    $object_C = new Object($object_B);
 
-$class->new = function ($that) { return new Object($that->prototype); };
+    $object_A->a = 1;
+    $object_B->b = 2;
+    $object_C->c = 3;
 
-$instance = $class->new();
+    echo $object_C->a, $object_C->b, $object_C->c; // '1 2 3'
+    ```
 
-$class->prototype->sayHello = function () { echo "hello!\n"; };
+If you want to prevent a value change in the parent to occur in the children, simply clone them !
 
-$instance->sayHello(); // hello!
-```
+    ```PHP
+    <?php
+    require_once "Prototype/Object.php";
+    require_once "Prototype/FunctionObject.php";
 
-Now you can do pretty much everything with your objects & prototypes, the only limit is your imagination. Since we cannot reproduce exactly the JavaScript object oriented behavior (and, to be honnest, we're just doing a vague emulation here) it's pretty fun and flexible.
+    use Prototype\Object,Prototype\FunctionObject;
 
-Oh, and did I mention you can override any object __clone, __toString, __destruct, __sleep & __wakeup (that's right, these objects are serializable!) methods using but closures ?
+    $object_A = new Object;
+    $object_A->method = function () {
+        return 'foo';
+    };
 
+    $object_B = new Object;
+    $object_B->prototype = clone $object_A; // another way to define the prototype
+
+    echo $object_B->method(); // 'foo'
+
+    $object_A->foo = function () {
+        return 'bar';
+    };
+
+    echo $object->foo(); // still 'foo'
+    ```
+
+##More cool stuff
+
+Prototyped objects are also traversables structures...
+
+    ```PHP
+    <?php
+    require_once "Prototype/Object.php";
+    require_once "Prototype/FunctionObject.php";
+
+    use Prototype\Object,Prototype\FunctionObject;
+
+    $object = new Object([1,2,3]);
+
+    foreach ($object as $value)
+        echo $value; // '1 2 3'
+    ```
+
+... as well as arrays.
+
+    ```PHP
+    <?php
+    require_once "Prototype/Object.php";
+    require_once "Prototype/FunctionObject.php";
+
+    use Prototype\Object,Prototype\FunctionObject;
+
+    $object = new Object;
+
+    $object['a'] = 1;
+    $object['getA'] = function () {
+        return $this['a'];
+    };
+
+    echo $object->getA();
+    ```
+
+You can even turn a function into a factory.
+
+    ```PHP
+    <?php
+    require_once "Prototype/Object.php";
+    require_once "Prototype/FunctionObject.php";
+
+    use Prototype\Object,Prototype\FunctionObject;
+
+    $function = new FunctionObject(function ($a, $b, $c) {
+        $this->a = $a;
+        $this->b = $b;
+        $this->c = $c;
+        // yep, you can override toString
+        $this->toString = function () {
+            return "{$this->a} {$this->b} {$this->c}";
+        };
+        return clone $this;
+    });
+
+    $object = $function(1,2,3);
+    echo $object; // '1 2 3'
+    ```
 
