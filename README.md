@@ -6,6 +6,19 @@
 
 prototype.php is a proof-of-concept that demonstrate that the prototypal inheritance, which is the strenght of many modern languages like JavaScript, is also applicable to PHP.
 
+Simply download it, require Object & FunctionObject and _voilà_. Theses classes are namespaces so you may want to use `use` statement to ease your developments:
+
+```PHP
+<?php
+require_once "Prototype/Object.php";
+require_once "Prototype/FunctionObject.php";
+
+use Prototype\Object,
+    Prototype\FunctionObject;
+
+// really cool code here
+```
+
 ##Create an object
 
 Very simple, instanciate Prototype\Object class and treat it like a JavaScript object.
