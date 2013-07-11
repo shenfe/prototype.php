@@ -6,7 +6,7 @@
 
 prototype.php is a proof-of-concept that demonstrate that the prototypal inheritance, which is the strenght of many modern languages like JavaScript, is also applicable to PHP.
 
-Simply download it, require Object & FunctionObject and _voilà_. Theses classes are namespaces so you may want to use `use` statement to ease your developments:
+Simply download it, require Object & FunctionObject and _voilà_. Theses classes are namespaced so you may want to use `use` statement to ease your developments:
 
 ```PHP
 <?php

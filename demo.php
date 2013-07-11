@@ -1,8 +1,9 @@
 <?php
-require "Prototype/Object.php";
+require "Prototype/PrototypicalTrait.php";
+require "Prototype/PrototypicalObject.php";
 require "Prototype/FunctionObject.php";
 
-use Prototype\Object,
+use Prototype\PrototypicalObject as Object,
     Prototype\FunctionObject;
 
 //

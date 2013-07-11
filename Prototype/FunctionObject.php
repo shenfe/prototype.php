@@ -28,12 +28,13 @@ namespace Prototype;
 use \Closure;
 
 /**
- * Prototyped functions class
+ * Prototype aware functions class
  *
  * @package Prototype
  * @author Benjamin Delespierre
  */
-class FunctionObject extends Object {
+class FunctionObject {
+    use PrototypicalTrait;
 
     /**
      * Instanciate an new prototyped function
@@ -41,7 +42,6 @@ class FunctionObject extends Object {
      * @param Closure $closure The native closure
      */
     public function __construct (Closure $closure) {
-        parent::__construct();
         $this->_['closure'] = Closure::bind($closure, $this);
     }
 
@@ -63,11 +63,11 @@ class FunctionObject extends Object {
      * This method may take as many parameters after $object as the native
      * closuse accepts. No integrity check will be made.
      *
-     * @param Prototype\Object $object The scope
+     * @param Prototype\PrototypicalObject $object The scope
      *
      * @return mixed
      */
-    public function call (Object $object) {
+    public function call (PrototypicalObject $object) {
         return $this->apply($object, array_slice(func_get_args(), 1));
     }
 
@@ -77,12 +77,12 @@ class FunctionObject extends Object {
      * This method takes as second parameter an array consisting of parameters
      * for the native closure. No integrity check will be made.
      *
-     * @param Prototype\Object $object The scope
-     * @param array            $args   The function arguments
+     * @param Prototype\PrototypicalObject $object The scope
+     * @param array                        $args   The function arguments
      *
      * @return mixed
      */
-    public function apply (Object $object, array $args) {
+    public function apply (PrototypicalObject $object, array $args) {
         $closure = Closure::bind($this->_['closure'], $object);
         return call_user_func_array($closure, $args);
     }
