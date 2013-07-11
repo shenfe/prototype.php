@@ -155,3 +155,23 @@ $object = $function(1,2,3);
 echo $object; // '1 2 3'
 ```
 
+Now you can also use the `Prototype\PrototypicalTrait` in order to give more power to existing classes.
+
+```PHP
+class ObjectSorage extends SplObjectStorage {
+    use Prototype\PrototypicalTrait ;
+}
+
+$warehouse = new ObjectStorage;
+
+$warehouse->attachScalar = function ($scalar) {
+    return $this->attach((object)compact('scalar'));
+}
+
+$warehouse->attachScalar(1);
+$warehouse->attachScalar(2);
+$warehouse->attachScalar(3);
+
+foreach ($warehouse as $object)
+    var_dump( $object );
+```
