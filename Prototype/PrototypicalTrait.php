@@ -44,7 +44,7 @@ trait PrototypicalTrait {
      * @internal
      * @var array
      */
-    protected $_ = array();
+    protected $_ = [];
 
     /**
      * Destructs a prototypable object
@@ -120,7 +120,7 @@ trait PrototypicalTrait {
      *
      * @throws BadMethodCallException If $name is not found or not a method
      */
-    public function __call ($name, $args = array()) {
+    public function __call ($name, $args = []) {
         if (!($fn = $this->__get($name)) || !$fn instanceof FunctionObject)
             throw new BadMethodCallException("Object has no method '$name'");
         return $fn->apply($this, $args);

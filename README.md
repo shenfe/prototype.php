@@ -10,10 +10,11 @@ Simply download it, require Object & FunctionObject and _voilà_. Theses classes
 
 ```PHP
 <?php
-require_once "Prototype/Object.php";
+require_once "Prototype/PrototypicalTrait.php";
+require_once "Prototype/PrototypicalObject.php";
 require_once "Prototype/FunctionObject.php";
 
-use Prototype\Object,
+use Prototype\PrototypicalObject as Object,
     Prototype\FunctionObject;
 
 // really cool code here
