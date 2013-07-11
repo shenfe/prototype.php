@@ -29,6 +29,12 @@ use \ArrayAccess;
 use \Iterator;
 use \ReflectionClass;
 
+/**
+ * Prototypical objects
+ *
+ * @package Prototype
+ * @author Benjamin Delespierre
+ */
 class PrototypicalObject implements ArrayAccess, Iterator {
     use PrototypicalTrait;
 
