@@ -1,10 +1,10 @@
-#prototype.php
+# prototype.php
 
 **Prototypal inheritance in PHP**
 
-##Tired of classical inheritance ?
+## Tired of classical inheritance ?
 
-prototype.php is a proof-of-concept that demonstrate that the prototypal inheritance, which is the strenght of many modern languages like JavaScript, is also applicable to PHP.
+prototype.php is a proof-of-concept that demonstrate that the prototypal inheritance, which is the strength of many modern languages like JavaScript, is also applicable to PHP.
 
 Simply download it, require Object & FunctionObject and _voilà_. Theses classes are namespaced so you may want to use `use` statement to ease your developments:
 
@@ -20,7 +20,7 @@ use Prototype\PrototypicalObject as Object,
 // really cool code here
 ```
 
-##Create an object
+## Create an object
 
 Very simple, instanciate Prototype\Object class and treat it like a JavaScript object.
 
@@ -60,7 +60,7 @@ echo $function->call($object); // 'helloworld!'
 
 As you may have noticed, we use PHP 5.4 Closures.
 
-##Inherit objects
+## Inherit objects
 
 The first parameter of `Prototype\Object::__construct` can be either a structure (array) or a prototype for the new object (instance of `Prototype\Object`). In the later, the new object will then inherit all the members from his parent unless it redefines them.
 
@@ -113,7 +113,7 @@ $object_A->foo = function () {
 echo $object->foo(); // still 'foo'
 ```
 
-##More cool stuff
+## More cool stuff
 
 Prototyped objects are also traversables structures...
 
